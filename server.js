@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
     port: 3001,
     user: "root",
     password: "",
-    database: "",
+    database: "business_db",
 });
 
 connection.connect(function (err) {
@@ -31,13 +31,10 @@ function mainMenue() {
                     "View all roles",
                     "View all departments",
                     "View all employees by department",
-
                     "Edit employee",
-
                     "Add new employee",
                     "Add new role",
                     "Add new department",
-
                     "Terminate employee",
                     "Delete role type",
                     "Delete department type",
@@ -85,55 +82,166 @@ function mainMenue() {
                 connection.end();
             }
         });
+}
 
-
-    // function to view employee
+// function to view employee
 function viewAllEmployees() {
-
+    connection.query(
+        "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            mainMenue();
+        }
+    );
 }
-    // function to view job type
+
+// function to view job type
 function viewAllRoles() {
-
+    connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        questions();
+    });
 }
-    // function to view departments
+
+// function to view departments
 function viewAllDepartments() {
-
+    connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        mainMenue();
+    });
 }
-    // function to view employees by department
+
+
+// function to view employees by department
 function viewEmployeesByDepartment() {
 
 }
 
-    // function to edit an emplyee role
+// function to edit an emplyee role
 function editEmployee() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "employeeId",
+            message: "Enter ID of employee being edited"
+        },
+        {
+            type: "input",
+            name: "roleId",
+            message: "Enter new role ID number"
+        }
+    ]).then(answers => {
 
+        connection.query('UPDATE employee SET ? WHERE ?', [
+            {
+                role_id: answers.roleId
+            },
+            {
+                id: answers.employeeId
+            }
+        ])
+        mainMenue();
+    });
 }
 
-    // function to add employee
+// function to add employee
 function addEmployee() {
-
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "firstName",
+                message: "Enter the new employees first name",
+            },
+            {
+                type: "input",
+                name: "lastName",
+                message: "Enter the new employees last name",
+            },
+            {
+                type: "input",
+                name: "roleId",
+                message: "Enter the new employees role ID number",
+            },
+            {
+                type: "input",
+                name: "managerId",
+                message: "Enter the employees manager ID number?",
+            },
+        ])
+        .then((answers) => {
+            connection.query("INSERT INTO employee SET ?", {
+                first_name: answers.firstName,
+                last_name: answers.lastName,
+                role_id: answers.roleId,
+                manager_id: answers.managerId,
+            });
+            mainMenue();
+        });
 }
-    // function to add job type
+
+// function to add job type
 function addRole() {
-
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "roleName",
+                message: "Enter the name of the new role"
+            },
+            {
+                type: "input",
+                name: "departmentId",
+                message: "Enter the department ID"
+            },
+            {
+                type: "input",
+                name: "salary",
+                message: "Enter the salary amount"
+            }
+        ])
+        .then((answers) => {
+            connection.query("INSERT INTO role SET ?", {
+                title: answers.roleName,
+                salary: answers.salary,
+                department_id: answers.departmentId,
+            });
+            mainMenue();
+        })
 }
-    // function to add dept
+
+
+// function to add dept
 function addDepartment() {
-
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "dept",
+                message: "Enter the name of the new department",
+            },
+        ])
+        .then((answer) => {
+            connection.query("INSERT INTO department SET ?", {
+                name: answer.dept,
+            });
+            mainMenue();
+        });
 }
 
-
-    // function to delete employee
+// function to delete employee
 function terminateEmployee() {
 
 }
-    // function to delete job type
+// function to delete job type
 function deleteRole() {
-    
-}
-    // function to delete dept
-function deleteDepartment() {
-    
-}
 
 }
+// function to delete dept
+function deleteDepartment() {
+
+}
+
