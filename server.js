@@ -11,9 +11,16 @@ const connection = mysql.createConnection({
     database: "business_db",
 });
 
-connection.connect(function (err) {
-    if (err) throw err;
+connection.connect(function (error) {
+    //callback
+    if (!error) {
+        console.log("error");
+    } else {
+        console.log("connected");
+    }
+
     mainMenue();
+
 });
 
 
@@ -24,13 +31,12 @@ function mainMenue() {
         .prompt([
             {
                 type: "list",
-                name: "mainMenue",
-                message: "Select what action you would like to process",
+                name: "mainMenueList",
+                message: "Select what action you would like to perform",
                 choices: [
                     "View all employees",
                     "View all roles",
                     "View all departments",
-                    "View all employees by department",
                     "Edit employee",
                     "Add new employee",
                     "Add new role",
@@ -45,37 +51,37 @@ function mainMenue() {
 
         // choice selection run corresponding function
         .then((answer) => {
-            if (answer.mainMenue === "View all employees") {
+            if (answer.mainMenueList === "View all employees") {
                 viewAllEmployees();
 
-            } else if (answer.mainMenue === "View all roles") {
+            } else if (answer.mainMenueList === "View all roles") {
                 viewAllRoles();
 
-            } else if (answer.mainMenue === "View all departments") {
+            } else if (answer.mainMenueList === "View all departments") {
                 viewAllDepartments();
 
-            } else if (answer.mainMenue === "View employees by department") {
+            } else if (answer.mainMenueList === "View employees by department") {
                 viewEmployeesByDepartment();
 
-            } else if (answer.mainMenue === "Edit employee") {
+            } else if (answer.mainMenueList === "Edit employee") {
                 editEmployee();
 
-            } else if (answer.mainMenue === "Add new employeet") {
+            } else if (answer.mainMenueList === "Add new employeet") {
                 addEmployee();
 
-            } else if (answer.mainMenue === "Add new role") {
+            } else if (answer.mainMenueList === "Add new role") {
                 addRole();
 
-            } else if (answer.mainMenue === "Add new department") {
+            } else if (answer.mainMenueList === "Add new department") {
                 addDepartment();
 
-            } else if (answer.mainMenue === "Terminate employee") {
+            } else if (answer.mainMenueList === "Terminate employee") {
                 terminateEmployee();
 
-            } else if (answer.mainMenue === "Delete role type") {
+            } else if (answer.mainMenueList === "Delete role type") {
                 deleteRole();
 
-            } else if (answer.mainMenue === "Delete department type") {
+            } else if (answer.mainMenueList === "Delete department type") {
                 deleteDepartment();
 
             } else {
@@ -87,65 +93,60 @@ function mainMenue() {
 // function to view employee
 function viewAllEmployees() {
     connection.query(
-        "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;",
+        'SELECT employee.id, first_name, last_name, title, salary, dept_name, manager_id FROM ((department JOIN job ON department.id = job.department_id) JOIN employee ON job.id = employee.job_id);',
         function (err, res) {
             if (err) throw err;
             console.table(res);
             mainMenue();
         }
     );
-}
+};
 
 // function to view job type
 function viewAllRoles() {
-    connection.query("SELECT * FROM role", function (err, res) {
+    connection.query('SELECT * FROM job', function (err, res) {
         if (err) throw err;
         console.table(res);
-        questions();
+        mainMenue();
     });
-}
+};
 
 // function to view departments
 function viewAllDepartments() {
-    connection.query("SELECT * FROM department", function (err, res) {
+    connection.query('SELECT * FROM department', function (err, res) {
         if (err) throw err;
         console.table(res);
         mainMenue();
     });
-}
-
-
-// function to view employees by department
-function viewEmployeesByDepartment() {
-
-}
+};
 
 // function to edit an emplyee role
 function editEmployee() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "employeeId",
-            message: "Enter ID of employee being edited"
-        },
-        {
-            type: "input",
-            name: "roleId",
-            message: "Enter new role ID number"
-        }
-    ]).then(answers => {
-
-        connection.query('UPDATE employee SET ? WHERE ?', [
+    inquirer
+        .prompt([
             {
-                role_id: answers.roleId
+                type: "input",
+                name: "employeeId",
+                message: "Enter ID of employee being edited"
             },
             {
-                id: answers.employeeId
+                type: "input",
+                name: "roleId",
+                message: "Enter new role ID number"
             }
         ])
-        mainMenue();
-    });
-}
+        .then(answer => {
+            connection.query(
+                "UPDATE employee SET ? WHERE ?",
+                [answer.jobId, answer.id],
+                function (err, res) {
+                    if (err) throw err;
+                    console.log("Finished Employee Edit");
+                    mainMenue();
+                }
+            );
+        });
+};
 
 // function to add employee
 function addEmployee() {
