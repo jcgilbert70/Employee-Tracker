@@ -74,7 +74,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 
    ## Screenshot
 
-  <img src="img/screenshot.png" width="600">
+  <img src="./img/Screenshot.png" width="600">
 
 
   ## Links
