@@ -39,7 +39,7 @@ function mainMenue() {
                     "Add new employee",
                     "Add new role",
                     "Add new department",
-                    "Terminate employee",
+                    //"Terminate employee",
                     "Exit",
                 ],
             },
