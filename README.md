@@ -6,7 +6,7 @@
   
  
   ## Description
-  description of project
+  This application uses node and mysql to utilize a database to view employees, roles and departments within a business. Also add employees, roles and departments within a business. Also the ability to edit an employees role within that business.
   
 ## User Story
 
@@ -58,7 +58,7 @@ THEN I am prompted to select an employee to update and their new role and this i
   
   - In order to use this application you first need to clone the repository to your local machine.
   - Then follow installation instructions to install all dependecnies for the application withing the directory
-  - You will need to seed your database on your local machine by using "SOURCE ./db/Schema.sql;" and "SOURCE ./db/seeds.sql;" commands while within mysql after locating the applications directory.
+  - You will need to seed your database on your local machine by using "SOURCE ./db/schema.sql;" and "SOURCE ./db/seeds.sql;" commands while within mysql after locating the applications directory.
   - Now you can run the application by using "npm start"
   - Currently the only way to delete information is to reload the database which will get rid of all information and start new.
  
@@ -80,7 +80,7 @@ THEN I am prompted to select an employee to update and their new role and this i
   ## Links
 
   Video Demo
-  https://app.castify.com/watch/fad6f253-2d22-4753-b845-62a692aebdc3
+https://app.castify.com/watch/3fd7a3cf-406c-49fb-b217-2d26becdb84b
 
   Repository
   https://github.com/jcgilbert70/Employee-Tracker.git
