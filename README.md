@@ -58,7 +58,7 @@ THEN I am prompted to select an employee to update and their new role and this i
   
   - In order to use this application you first need to clone the repository to your local machine.
   - Then follow installation instructions to install all dependecnies for the application withing the directory
-  - You will need to seed your database on your local machine by using "SOURCE ./db/Schema.sql;" and "SOURCE ./db/seeds.sql;" commands withing mysql after locating the applications directory.
+  - You will need to seed your database on your local machine by using "SOURCE ./db/Schema.sql;" and "SOURCE ./db/seeds.sql;" commands while within mysql after locating the applications directory.
   - Now you can run the application by using "npm start"
   - Currently the only way to delete information is to reload the database which will get rid of all information and start new.
  
