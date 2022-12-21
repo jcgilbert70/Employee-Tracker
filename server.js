@@ -14,14 +14,11 @@ const connection = mysql.createConnection({
 connection.connect(function (err) {
     //callback
     if (err) {
-    //throw err;
-    console.log("failed: " + err);
+        console.log("FAILED CONNECTION: " + err);
+        throw err;
     }
-    
-    
-        console.log("connected");
-        mainMenue();
-    
+    console.log("connected");
+    mainMenue();
 
 });
 
@@ -42,6 +39,7 @@ function mainMenue() {
                     "Add new employee",
                     "Add new role",
                     "Add new department",
+                    "Terminate employee",
                     "Exit",
                 ],
             },
@@ -61,7 +59,7 @@ function mainMenue() {
             } else if (answer.mainMenueList === "Edit employee") {
                 editEmployee();
 
-            } else if (answer.mainMenueList === "Add new employeet") {
+            } else if (answer.mainMenueList === "Add new employee") {
                 addEmployee();
 
             } else if (answer.mainMenueList === "Add new role") {
@@ -69,6 +67,11 @@ function mainMenue() {
 
             } else if (answer.mainMenueList === "Add new department") {
                 addDepartment();
+
+            } else if (answer.mainMenueList === "Terminate employee") {
+                terminateEmployee();
+
+
             } else {
                 console.log("LeftProgram");
                 connection.end();
@@ -161,8 +164,8 @@ function addEmployee() {
         ])
         .then((answer) => {
             connection.query(
-                "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
-                [answer.nameFirst, answer.nameLast, answer.roleId, answer.managerId],
+                "INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES (?, ?, ?, ?)",
+                [answer.firstName, answer.lastName, answer.roleId, answer.managerId],
                 function (err, res) {
                     if (err) throw err;
                     console.log("New Employee Added");
@@ -195,7 +198,7 @@ function addRole() {
         ])
         .then(answer => {
             connection.query(
-                'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
+                'INSERT INTO roleS (title, salary, department_id) VALUES (?, ?, ?)',
                 [answer.roleName, answer.salary, answer.departmentId],
                 function (err, res) {
                     if (err) throw err;
@@ -217,7 +220,7 @@ function addDepartment() {
     ])
         .then(answer => {
             connection.query(
-                'INSERT INTO department (dept_name) VALUES (?)',
+                'INSERT INTO department (deptName) VALUES (?)',
                 [answer.department],
                 function (err, res) {
                     if (err) throw err;
@@ -226,4 +229,36 @@ function addDepartment() {
                 }
             );
         });
+}
+
+
+
+/*
+// function to delete employee
+function terminateEmployee() {
+    const employeeList = viewAllEmployees();
+    console.table(employeeList);
+    const terminationList = employeeList.map(({ id, name}))
+    inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Select employee who is being terminated",
+                choices: terminationList,
+            }
+        ])
+        .then((answer) => {
+            connection.query(
+                "DELETE FROM employee WHERE id = ?",
+                [answer.employee],
+                function (err, res) {
+                    if (err) throw err;
+                    console.log("Employee Terminated");
+                    mainMenue();
+                }
+            );
+        })
+
 };
+*/
